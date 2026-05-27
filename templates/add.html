@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Item</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        @media (max-width: 600px) {
+            .panel { padding: 24px 18px; border-radius: 14px; }
+            .title { font-size: 1.4rem; }
+            .panel input, .panel select { padding: 14px 12px; }
+            .panel button { padding: 14px; font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="panel">
+            <p class="title">Add New Item</p>
+            <form action="{{ url_for('add') }}" method="POST">
+                <input type="text" name="pname" placeholder="Enter item name" required autocomplete="off">
+                <input type="number" name="quantity" placeholder="Enter quantity" min="1" required autocomplete="off">
+                <button type="submit" class="submit-btn">Add Item</button>
+            </form>
+            <p class="link"><a href="{{ url_for('dashboard') }}">Back to Dashboard</a></p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,69 @@
+/* Consolidated styles for Flask templates */
+html, body {
+    margin: 0;
+    min-height: 100vh;
+    height: 100%;
+    background: #e4e4e4;
+    font-family: Arial, sans-serif;
+    color: #1f2937;
+}
+body { display: block; }
+
+.page { min-height: 100vh; display: grid; place-items: center; padding: 40px 16px; }
+.panel { width: 100%; max-width: 420px; background: rgba(255,255,255,0.95); border-radius: 20px; padding: 36px 30px; box-shadow: 0 20px 80px rgba(0, 0, 0, 0.18); }
+.title { margin: 0 0 24px; text-align: center; font-size: 1.8rem; color: #111827; font-weight: 600; }
+.panel form { display: flex; flex-direction: column; gap: 18px; }
+.panel input, .panel select { width: 100%; padding: 18px 16px; border: none; border-radius: 14px; background: #f8fafc; box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.06); font-size: 1rem; color: #111827; box-sizing: border-box; }
+.panel input:focus, .panel select:focus { outline: none; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18); }
+.panel button { width: 100%; padding: 16px; border: none; border-radius: 14px; background: #2563eb; color: #fff; font-size: 1rem; cursor: pointer; font-weight: 500; transition: background-color 0.2s ease; }
+.panel button:hover { background: #1d4ed8; }
+.link { margin: 0; color: #374151; font-size: 0.95rem; text-align: center; }
+.link a { color: #7c3aed; text-decoration: none; }
+
+.container { width: 95%; max-width: 1120px; margin: 40px auto; padding: 24px; }
+.card { background: #ffffff; border-radius: 22px; box-shadow: 0 18px 60px rgba(15, 23, 42, 0.12); overflow: hidden; margin-bottom: 30px; }
+.card-header { background: #f8fafc; padding: 32px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: start; }
+.card-header h2 { margin: 0 0 12px 0; font-size: 1.8rem; color: #111827; }
+.user-info { font-size: 1rem; color: #6b7280; margin: 0 0 8px 0; }
+.badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-left: 8px; }
+.admin-badge { background: #dbeafe; color: #1e40af; }
+.user-badge { background: #dcfce7; color: #15803d; }
+.notification-message { margin: 8px 0 0 0; color: #d97706; font-weight: 600; font-size: 0.95rem; }
+.card-actions { display: flex; gap: 12px; }
+.btn { padding: 12px 24px; border: none; border-radius: 10px; font-size: 1rem; cursor: pointer; text-decoration: none; display: inline-block; transition: background-color 0.2s ease; }
+.btn.primary { background: #2563eb; color: white; }
+.btn.primary:hover { background: #1d4ed8; }
+.btn.danger { background: #dc2626; color: white; }
+.btn.danger:hover { background: #b91c1c; }
+.btn.success { background: #16a34a; color: white; font-size: 0.9rem; padding: 8px 16px; }
+.btn.secondary { background: #4463ef; color: white; font-size: 0.9rem; padding: 8px 16px; }
+.btn.edit { background: #4463ef; color: white; font-size: 0.9rem; padding: 8px 16px; }
+.card-body { padding: 32px; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead { background: #f8fafc; border-bottom: 2px solid #e2e8f0; }
+th { padding: 16px; text-align: left; font-weight: 600; color: #374151; font-size: 0.95rem; }
+td { padding: 16px; border-bottom: 1px solid #e2e8f0; color: #4b5563; }
+tr:hover { background: #f8fafc; }
+.action-btns { display: flex; gap: 8px; }
+.empty-message { text-align: center; color: #6b7280; padding: 40px; font-size: 1.1rem; }
+.section-title { font-size: 1.4rem; color: #111827; margin: 24px 0 16px 0; }
+
+@media (max-width: 800px) {
+    .card-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .card-actions { width: 100%; display:flex; gap:8px; }
+    th, td { padding: 12px; font-size: 0.95rem; }
+    .items-table thead { display: none; }
+    .items-table tbody tr { display: block; border: 1px solid #e6eefc; margin-bottom: 12px; border-radius: 8px; padding: 12px; }
+    .items-table tbody tr td { display: block; width: 100%; border-bottom: none; }
+    .items-table tbody tr td:first-child { font-weight: 700; }
+    .action-btns { margin-top: 8px; }
+    .card { margin-bottom: 18px; }
+}
+
+@media (max-width: 600px) {
+    .panel { padding: 24px 18px; border-radius: 14px; }
+    .title { font-size: 1.4rem; }
+    .panel input, .panel select { padding: 14px 12px; }
+    .panel button { padding: 14px; font-size: 0.95rem; }
+}

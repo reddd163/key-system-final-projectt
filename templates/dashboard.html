@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        @media (max-width: 800px) {
+            .card-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .card-actions { width: 100%; display: flex; flex-wrap: wrap; gap: 8px; }
+            .card-actions .btn { flex: 1 1 100%; }
+        }
+        @media (max-width: 600px) {
+            .container { padding: 16px; }
+            .card-body { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h2>Dashboard</h2>
+                    <p class="user-info">Welcome, {{ session.username }} <span class="badge {{ 'admin-badge' if session.role == 'admin' else 'user-badge' }}">{{ session.role|capitalize }}</span></p>
+                    {% if session.role == 'admin' %}
+                    <p class="notification-message">{{ pending_count }} pending request{{ 's' if pending_count != 1 else '' }}</p>
+                    {% endif %}
+                </div>
+                <div class="card-actions">
+                    <a href="{{ url_for('add') }}" class="btn primary">Add Item</a>
+                    <a href="{{ url_for('logout') }}" class="btn secondary">Logout</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <h3 class="section-title">Items</h3>
+                <div class="table-wrap">
+                    {% if items %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Added At</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td>{{ item.id }}</td>
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{{ item.created_at }}</td>
+                                <td>
+                                    <div class="action-btns">
+                                        {% if session.role == 'admin' %}
+                                        <a href="{{ url_for('edit', item_id=item.id) }}" class="btn secondary">Edit</a>
+                                        <a href="{{ url_for('delete', item_id=item.id) }}" class="btn danger" onclick="return confirm('Delete this item?')">Delete</a>
+                                        {% else %}
+                                        <span style="color:#6b7280;">No actions</span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="empty-message">No items found.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if session.role == 'admin' and pending_requests %}
+        <div class="card">
+            <div class="card-body">
+                <h3 class="section-title">Pending Approval Requests</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>IDNo.</th>
+                                <th>Requested By</th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                                <th>Requested At</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for req in pending_requests %}
+                            <tr>
+                                <td>{{ req.id }}</td>
+                                <td>{{ req.requester }}</td>
+                                <td>{{ req.name }}</td>
+                                <td>{{ req.quantity }}</td>
+                                <td><span class="badge admin-badge">{{ req.status }}</span></td>
+                                <td>{{ req.created_at }}</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <a href="{{ url_for('approve', request_id=req.id) }}" class="btn success">Approve</a>
+                                        <a href="{{ url_for('reject', request_id=req.id) }}" class="btn secondary" onclick="return confirm('Reject this request?')">Reject</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% elif session.role == 'user' and user_requests %}
+        <div class="card">
+            <div class="card-body">
+                <h3 class="section-title">Your Requests</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>IDNo.</th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                                <th>Requested At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for req in user_requests %}
+                            <tr>
+                                <td>{{ req.id }}</td>
+                                <td>{{ req.name }}</td>
+                                <td>{{ req.quantity }}</td>
+                                <td><span class="badge {% if req.status == 'pending' %}admin-badge{% else %}user-badge{% endif %}">{{ req.status }}</span></td>
+                                <td>{{ req.created_at }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

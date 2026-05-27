@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Form</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="page">
+        <div class="panel">
+            <p class="title">Create New Account</p>
+            <form action="{{ url_for('register') }}" method="POST">
+                <input type="text" name="name" placeholder="Enter your name" required>
+                <input type="number" name="age" placeholder="Enter your age" required>
+                <input type="email" name="gmail" placeholder="Enter your email" required>
+                <input type="text" name="username" placeholder="Enter your username" required>
+                <input type="password" name="pass" placeholder="Enter your password" required>
+                <select name="role" required>
+                    <option value="">Select account type</option>
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <p class="link">Already have an account? <a href="{{ url_for('index') }}">Login</a></p>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
