@@ -66,7 +66,9 @@
                     {% endif %}
                 </div>
                 <div class="card-actions">
+                    {% if session.role == 'admin' %}
                     <a href="{{ url_for('add') }}" class="btn primary">Add Item</a>
+                    {% endif %}
                     <a href="{{ url_for('logout') }}" class="btn secondary">Logout</a>
                 </div>
             </div>

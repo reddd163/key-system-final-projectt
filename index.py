@@ -44,7 +44,6 @@ def get_db_connection():
         print(f"❌ CLOUD DATABASE CONNECTION CRITICAL ERROR: {e}")
         return None
 
-# LOGIN REQUIRED DECORATOR
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -62,7 +61,6 @@ def index():
     return render_template('login.html')
 
 
-# REGISTER USER / ADMIN REGISTRY PIPELINE
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -105,7 +103,6 @@ def register():
     return render_template('register.html')
 
 
-# LOGIN SYSTEM VERIFICATION LAYER
 @app.route('/login', methods=['POST'])
 def login():
     username = request.form.get('username')
@@ -148,7 +145,6 @@ def login():
     return redirect(url_for('index'))
 
 
-# MAIN SYSTEM DASHBOARD
 @app.route('/dashboard')
 @login_required
 def dashboard():
@@ -209,7 +205,6 @@ def dashboard():
     )
 
 
-# ─── INVENTORY OPERATIONS CHANNELS ───
 
 @app.route('/add', methods=['GET', 'POST'])
 @login_required
@@ -335,8 +330,6 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
-
-# REQUIRED FOR VERCEL
 app = app
 
 if __name__ == "__main__":
