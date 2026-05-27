@@ -44,6 +44,7 @@ def get_db_connection():
         print(f"❌ CLOUD DATABASE CONNECTION CRITICAL ERROR: {e}")
         return None
 
+# LOGIN REQUIRED DECORATOR
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -161,8 +162,11 @@ def dashboard():
                     "SELECT id, pname AS name, quantity, created_at FROM items ORDER BY id DESC"
                 )
                 items = cursor.fetchall()
+                print(f"DEBUG: fetched {len(items) if items is not None else 0} items")
+                if items:
+                    print("DEBUG: items sample:", items[:5])
 
-                if session.get('role') == 'admin':
+                if str(session.get('role', '')).lower() == 'admin':
                     cursor.execute("""
                         SELECT
                             r.id,
@@ -209,32 +213,44 @@ def dashboard():
 @app.route('/add', methods=['GET', 'POST'])
 @login_required
 def add():
-    if session.get('role') != 'admin':
-        return redirect(url_for('dashboard'))
-        
+    # Unified handler: admins add directly, regular users submit a request
     if request.method == 'POST':
-        pname = request.form.get('pname')  
+        pname = request.form.get('pname')
         quantity = request.form.get('quantity')
-        
+
         conn = get_db_connection()
         if conn:
             try:
                 with conn.cursor() as cursor:
-                    cursor.execute("INSERT INTO items (pname, quantity) VALUES (%s, %s)", (pname, quantity))
-                    conn.commit()
+                    if str(session.get('role', '')).lower() == 'admin':
+                        cursor.execute("INSERT INTO items (pname, quantity) VALUES (%s, %s)", (pname, quantity))
+                        conn.commit()
+                        flash("Item added successfully.", "success")
+                    else:
+                        cursor.execute(
+                            "INSERT INTO item_requests (user_id, name, quantity, status) VALUES (%s, %s, %s, %s)",
+                            (session.get('user_id'), pname, quantity, 'pending')
+                        )
+                        conn.commit()
+                        flash("Request submitted for approval.", "success")
             except pymysql.MySQLError as e:
-                print(f"Failed to add inventory item: {e}")
+                print(f"Failed to add or request inventory item: {e}")
+                flash("Database operation failed. Try again later.", "error")
             finally:
                 conn.close()
         return redirect(url_for('dashboard'))
-        
-    return render_template('add.html')  
+
+    # GET: show different forms depending on role
+    if str(session.get('role', '')).lower() == 'admin':
+        return render_template('add.html')
+    else:
+        return render_template('request.html')
 
 
 @app.route('/edit/<int:item_id>', methods=['GET', 'POST'])
 @login_required
 def edit(item_id):
-    if session.get('role') != 'admin':
+    if str(session.get('role', '')).lower() != 'admin':
         return redirect(url_for('dashboard'))
         
     conn = get_db_connection()
@@ -268,7 +284,7 @@ def edit(item_id):
 @app.route('/delete/<int:item_id>')
 @login_required
 def delete(item_id):
-    if session.get('role') != 'admin':
+    if str(session.get('role', '')).lower() != 'admin':
         return redirect(url_for('dashboard'))
         
     conn = get_db_connection()
@@ -288,17 +304,30 @@ def delete(item_id):
 @app.route('/approve/<int:request_id>')
 @login_required
 def approve(request_id):
-    if session.get('role') != 'admin':
+    if str(session.get('role', '')).lower() != 'admin':
         return redirect(url_for('dashboard'))
         
     conn = get_db_connection()
     if conn:
         try:
             with conn.cursor() as cursor:
-                cursor.execute("UPDATE item_requests SET status='approved' WHERE id=%s", (request_id,))
-                conn.commit()
+                # Fetch the request details
+                cursor.execute("SELECT id, user_id, name, quantity, status FROM item_requests WHERE id=%s", (request_id,))
+                req = cursor.fetchone()
+                if not req:
+                    flash("Request not found.", "error")
+                elif req.get('status') == 'approved':
+                    flash("Request already approved.", "info")
+                else:
+                    # Insert into items table
+                    cursor.execute("INSERT INTO items (pname, quantity) VALUES (%s, %s)", (req.get('name'), req.get('quantity')))
+                    # Mark request as approved
+                    cursor.execute("UPDATE item_requests SET status='approved' WHERE id=%s", (request_id,))
+                    conn.commit()
+                    flash("Request approved and item added to inventory.", "success")
         except pymysql.MySQLError as e:
             print(f"Approval handling processing failure: {e}")
+            flash("Failed to approve request. See server logs.", "error")
         finally:
             conn.close()
             
@@ -308,7 +337,7 @@ def approve(request_id):
 @app.route('/reject/<int:request_id>')
 @login_required
 def reject(request_id):
-    if session.get('role') != 'admin':
+    if str(session.get('role', '')).lower() != 'admin':
         return redirect(url_for('dashboard'))
         
     conn = get_db_connection()

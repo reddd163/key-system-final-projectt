@@ -35,6 +35,15 @@
 <body>
     <div class="page">
         <div class="panel">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div style="margin-bottom:12px;">
+                {% for category, msg in messages %}
+                    <div style="padding:8px 10px;border-radius:6px;margin-bottom:8px;color:#fff;background:{% if category=='success' %}#10b981{% else %}#ef4444{% endif %};">{{ msg }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
             <p class="title">Create New Account</p>
             <form action="{{ url_for('register') }}" method="POST">
                 <input type="text" name="name" placeholder="Enter your name" required autocomplete="off">

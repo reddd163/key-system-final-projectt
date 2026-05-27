@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Item</title>
+    <title>Request Item</title>
     <style>
         html, body {
             margin: 0;
@@ -15,12 +15,13 @@
         }
         .page { min-height: 100vh; display: grid; place-items: center; padding: 40px 16px; box-sizing: border-box; }
         .panel { width: 100%; max-width: 420px; background: rgba(255,255,255,0.95); border-radius: 20px; padding: 36px 30px; box-shadow: 0 20px 80px rgba(0, 0, 0, 0.18); box-sizing: border-box; }
-        .title { margin: 0 0 24px; text-align: center; font-size: 1.8rem; color: #111827; font-weight: 600; }
+        .title { margin: 0 0 16px; text-align: center; font-size: 1.6rem; color: #111827; font-weight: 600; }
+        .subtitle { margin: 0 0 20px; text-align: center; color: #6b7280; font-size: 0.95rem; }
         .panel form { display: flex; flex-direction: column; gap: 18px; }
         .panel input { width: 100%; padding: 18px 16px; border: none; border-radius: 14px; background: #f8fafc; box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.06); font-size: 1rem; color: #111827; box-sizing: border-box; }
         .panel input:focus { outline: none; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18); }
-        .panel button { width: 100%; padding: 16px; border: none; border-radius: 14px; background: #2563eb; color: #fff; font-size: 1rem; cursor: pointer; font-weight: 500; transition: background-color 0.2s ease; }
-        .panel button:hover { background: #1d4ed8; }
+        .panel button { width: 100%; padding: 16px; border: none; border-radius: 14px; background: #10b981; color: #fff; font-size: 1rem; cursor: pointer; font-weight: 500; transition: background-color 0.2s ease; }
+        .panel button:hover { background: #059669; }
         .link { margin: 12px 0 0; color: #374151; font-size: 0.95rem; text-align: center; }
         .link a { color: #7c3aed; text-decoration: none; }
 
@@ -44,11 +45,12 @@
             </div>
             {% endif %}
             {% endwith %}
-            <p class="title">Add New Item</p>
+            <p class="title">Request Item</p>
+            <p class="subtitle">This will send a request to admins for approval.</p>
             <form action="{{ url_for('add') }}" method="POST">
                 <input type="text" name="pname" placeholder="Enter item name" required autocomplete="off">
                 <input type="number" name="quantity" placeholder="Enter quantity" min="1" required autocomplete="off">
-                <button type="submit">Add Item</button>
+                <button type="submit">Request Item</button>
             </form>
             <p class="link"><a href="{{ url_for('dashboard') }}">Back to Dashboard</a></p>
         </div>

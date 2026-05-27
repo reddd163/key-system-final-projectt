@@ -56,19 +56,26 @@
 </head>
 <body>
     <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div style="margin-bottom:16px;">
+            {% for category, msg in messages %}
+                <div style="padding:10px 14px;border-radius:8px;margin-bottom:8px;color:#fff; background: {% if category == 'success' %}#10b981{% else %}#ef4444{% endif %};">{{ msg }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
         <div class="card">
             <div class="card-header">
                 <div>
                     <h2>Dashboard</h2>
-                    <p class="user-info">Welcome, {{ session.username }} <span class="badge {{ 'admin-badge' if session.role == 'admin' else 'user-badge' }}">{{ session.role|capitalize }}</span></p>
-                    {% if session.role == 'admin' %}
+                    <p class="user-info">Welcome, {{ session.username }} <span class="badge {{ 'admin-badge' if session.role|lower == 'admin' else 'user-badge' }}">{{ session.role|capitalize }}</span></p>
+                    {% if session.role|lower == 'admin' %}
                     <p class="notification-message">{{ pending_count }} pending request{{ 's' if pending_count != 1 else '' }}</p>
                     {% endif %}
                 </div>
                 <div class="card-actions">
-                    {% if session.role == 'admin' %}
                     <a href="{{ url_for('add') }}" class="btn primary">Add Item</a>
-                    {% endif %}
                     <a href="{{ url_for('logout') }}" class="btn secondary">Logout</a>
                 </div>
             </div>
@@ -95,7 +102,7 @@
                                 <td>{{ item.created_at }}</td>
                                 <td>
                                     <div class="action-btns">
-                                        {% if session.role == 'admin' %}
+                                        {% if session.role|lower == 'admin' %}
                                         <a href="{{ url_for('edit', item_id=item.id) }}" class="btn edit">Edit</a>
                                         <a href="{{ url_for('delete', item_id=item.id) }}" class="btn danger" onclick="return confirm('Delete this item?')">Delete</a>
                                         {% else %}
@@ -114,7 +121,7 @@
             </div>
         </div>
 
-        {% if session.role == 'admin' and pending_requests %}
+        {% if session.role|lower == 'admin' and pending_requests %}
         <div class="card">
             <div class="card-body">
                 <h3 class="section-title">Pending Approval Requests</h3>
@@ -153,7 +160,7 @@
                 </div>
             </div>
         </div>
-        {% elif session.role == 'user' and user_requests %}
+        {% elif session.role|lower == 'user' and user_requests %}
         <div class="card">
             <div class="card-body">
                 <h3 class="section-title">Your Requests</h3>
